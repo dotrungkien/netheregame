@@ -5,11 +5,11 @@ public class Column : MonoBehaviour
 {
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		if(other.GetComponent<Uni>() != null)
+		if(other.GetComponent<Bird>() != null)
 		{
-			//If the uni hits the trigger collider in between the columns then
-			//tell the game control that the uni scored.
-			GameControl.instance.UniScored();
+			//If the bird hits the trigger collider in between the columns then
+			//tell the game control that the bird scored.
+			GameControl.instance.BirdScored();
 		}
 	}
 }
