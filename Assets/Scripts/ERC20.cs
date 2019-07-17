@@ -14,6 +14,9 @@ public class ERC20 : MonoBehaviour
     private Account account;
     private Web3 web3;
 
+    public TextAsset contractABI;
+    public TextAsset contractAddress;
+
     void Start()
     {
         var url = "http://localhost:8545";
@@ -23,7 +26,20 @@ public class ERC20 : MonoBehaviour
         account = new Account(privateKey);
         web3 = new Web3(account, url);
         Debug.Log(string.Format("account {0}", account.Address));
-        DeployContract();
+        GetContract();
+    }
+
+    async void GetContract()
+    {
+        string abi = contractABI.ToString();
+        string address = contractAddress.ToString();
+        var contract = web3.Eth.GetContract(abi, address);
+        var transferFunction = contract.GetFunction("transfer");
+        var balanceFunction = contract.GetFunction("balanceOf");
+        // string addr = "0xa64d6ac040648d74e9be21a51d495a06b5bf57fe";
+        string addr = "0x87da1a1d9c3315057cf9aade12f7ab22a6109cc1";
+        BigInteger balance = await balanceFunction.CallAsync<BigInteger>(addr);
+        Debug.Log(string.Format("balance {0}", balance.ToString()));
     }
 
     async void DeployContract()
