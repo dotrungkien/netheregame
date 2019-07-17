@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Nethereum.ABI.FunctionEncoding;
 using Nethereum.ABI.Model;
 using Nethereum.Contracts;
+using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
