@@ -12,9 +12,6 @@ module.exports = async function(deployer, network, accounts) {
     let { abi, networks } = json;
     if (!Object.keys(networks).length) return;
     fs.writeFileSync(path.resolve(unityAbis, contract), JSON.stringify(json.abi));
-    fs.writeFileSync(
-      path.resolve(unityAbis, name + 'Address.txt'),
-      networks['1563334783893'].address
-    );
+    fs.writeFileSync(path.resolve(unityAbis, name + 'Address.txt'), networks['89'].address);
   });
 };
