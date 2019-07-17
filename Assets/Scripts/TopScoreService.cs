@@ -3,13 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+
 using Nethereum.ABI.FunctionEncoding;
 using Nethereum.ABI.Model;
 using Nethereum.Contracts;
+using Nethereum.Web3.Accounts;
 using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
 using Nethereum.JsonRpc.UnityClient;
 using Nethereum.Util;
+using Nethereum.Signer;
+
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -52,7 +56,15 @@ public class TopScoreService : MonoBehaviour
     private static extern string SendTransaction (string to, string data);
 #else
     public bool ExternalProvider = false;
-    private static string GetAccount() { return null; }
+    private static string GetAccount()
+    {
+        var ecKey = EthECKey.GenerateKey();
+        var privateKey = ecKey.GetPrivateKey();
+        Debug.Log(string.Format("private key {0}", privateKey));
+        // var privateKey = ecKey.GetPrivateKeyAsBytes().ToHex();
+        var account = new Account(ecKey);
+        return account.Address;
+    }
     private static string SendTransaction(string to, string data) { return null; }
 #endif
 
@@ -107,7 +119,8 @@ public class TopScoreService : MonoBehaviour
 
             foreach (var score in orderedScores)
             {
-                topScores = topScores + score.Score + "-" + score.Addr.Substring(0, 15) + "..." + Environment.NewLine;
+                // topScores = topScores + score.Score + "-" + score.Addr.Substring(0, 15) + "..." + Environment.NewLine;
+                topScores = topScores + score.Score + "-" + score.Addr + Environment.NewLine;
 
             }
             topScoresAllTimeText.text = topScores;
