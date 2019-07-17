@@ -5,6 +5,7 @@ using UnityEngine;
 
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
+using Nethereum.Contracts;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Signer;
 using Nethereum.Contracts;
@@ -22,7 +23,7 @@ public class ERC20 : MonoBehaviour
         var url = "http://localhost:8545";
         var ecKey = EthECKey.GenerateKey();
         // var privateKey = ecKey.GetPrivateKey();
-        var privateKey = "0xb3f177835a10ccc6a7b132d8e690c073738719bf73f93fcec16ce884cab4d569";
+        var privateKey = "0x74fa3007bef29d0fd7ccaf14a368a9e13419c4719c1d8ce30cefd82504457081";
         account = new Account(privateKey);
         web3 = new Web3(account, url);
         Debug.Log(string.Format("account {0}", account.Address));
@@ -36,10 +37,14 @@ public class ERC20 : MonoBehaviour
         var contract = web3.Eth.GetContract(abi, address);
         var transferFunction = contract.GetFunction("transfer");
         var balanceFunction = contract.GetFunction("balanceOf");
-        // string addr = "0xa64d6ac040648d74e9be21a51d495a06b5bf57fe";
-        string addr = "0x87da1a1d9c3315057cf9aade12f7ab22a6109cc1";
-        BigInteger balance = await balanceFunction.CallAsync<BigInteger>(addr);
-        Debug.Log(string.Format("balance {0}", balance.ToString()));
+        string from = "0x87da1a1d9c3315057cf9aade12f7ab22a6109cc1";
+        BigInteger balanceBefore = await balanceFunction.CallAsync<BigInteger>(from);
+        Debug.Log(string.Format("balance before transfer {0}", balanceBefore.ToString()));
+        string to = "0xa64d6ac040648d74e9be21a51d495a06b5bf57fe";
+        var gas = await transferFunction.EstimateGasAsync(from, null, null, to, 999);
+        var receiptFirstAmountSend = await transferFunction.SendTransactionAndWaitForReceiptAsync(from, gas, null, null, to, 999);
+        BigInteger balanceAfter = await balanceFunction.CallAsync<BigInteger>(from);
+        Debug.Log(string.Format("balance before transfer {0}", balanceAfter.ToString()));
     }
 
     async void DeployContract()
