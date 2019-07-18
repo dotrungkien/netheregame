@@ -35,11 +35,15 @@ public class ERC20 : MonoBehaviour
         string abi = contractABI.ToString();
         string address = contractAddress.ToString();
         var contract = web3.Eth.GetContract(abi, address);
+
+
         var transferFunction = contract.GetFunction("transfer");
         var balanceFunction = contract.GetFunction("balanceOf");
         string from = "0x959eCA49C3f83f20F2873F175bD22F19e971Ff8B";
+        var ethBalance = await web3.Eth.GetBalance.SendRequestAsync(from);
+        Debug.Log(string.Format("ETH balance {0}", Web3.Convert.FromWei(ethBalance.Value)));
         BigInteger balanceBefore = await balanceFunction.CallAsync<BigInteger>(from);
-        Debug.Log(string.Format("balance before transfer {0}", balanceBefore.ToString()));
+        Debug.Log(string.Format("Token balance before transfer {0}", balanceBefore.ToString()));
         // string to = "0xa64d6ac040648d74e9be21a51d495a06b5bf57fe";
         // var gas = await transferFunction.EstimateGasAsync(from, null, null, to, 999);
         // var receiptFirstAmountSend = await transferFunction.SendTransactionAndWaitForReceiptAsync(from, gas, null, null, to, 999);
